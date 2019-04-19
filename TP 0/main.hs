@@ -1,4 +1,15 @@
-type TCoche = (String, Double, Int, String)
+type TCoche = ([Char], Double, Integer, [Char]) --(Nombre, Nafta, Velocidad, Enamorado)
+getName :: TCoche -> String
+getNafta :: TCoche -> Double
+getVelocidad :: TCoche -> Integer
+getEnamorado :: TCoche -> String
+getEnamoradoCantChars  :: TCoche -> Int
+getCantIncrVelocidad :: TCoche -> Integer
+deReversa :: TCoche -> Double
+impresionar :: TCoche -> Integer
+incrementarVelocidad :: TCoche -> Integer
+fingirAmor :: TCoche -> String -> String
+
 --coches
 rayo = ("RochaMcQueen", 300.0, 0 , "Ro")
 biankerr = ("Biankerr", 500.0, 20, "Tinch")
