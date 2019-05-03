@@ -139,3 +139,21 @@ pocaReserva carrera = carrera {participantes = filtrarLista (participantes carre
 podio carrera = carrera {participantes = init (participantes carrera)} -- init devuelve la lista sin el ultimo elemento 
 
 --TODO: puntos 3.3 en adelante
+
+criterioCombustible :: Carrera -> Carrera
+criterioCombustible (Carrera longitudPista cantidadVueltas integrantesPublico (Auto nombre nafta velocidad enamorado truco) trampa participantes) = (Carrera longitudPista cantidadVueltas integrantesPublico (Auto nombre nafta (longitudPista/10)*velocidad)) enamorado truco) trampa participantes
+
+criterioEnamoradoPublico :: [Char] -> [String] -> Bool
+criterioEnamoradoPublico enamorado integrantesPublico | (elem) enamorado [lista]     
+
+criterioHacerTruco :: Carrera -> Auto -> Carrera 
+criterioEnamoradoPublico (Carrera longitudPista cantidadVueltas integrantesPublico trampa participantes) (Auto nombre nafta velocidad enamorado truco) |  criterioEnamoradoPublico enamorado integrantesPublico = (Carrera longitudPista cantidadVueltas integrantesPublico truco(Auto nombre nafta velocidad enamorado truco) trampa participantes) 
+
+realizarTruco :: Carrera -> Carrera
+realizarTruco (Carrera longitudPista cantidadVueltas integrantesPublico trampa participantes) = (Carrera longitudPista cantidadVueltas integrantesPublico trampa (trampa) participantes)) 
+
+
+daVuelta ::  Carrera -> Integer
+kmAlcanzados  (Carrera longitudPista cantidadVueltas integrantesPublico trampa (Auto nombre nafta velocidad enamorado truco)) = velocidad * longitudPista
+
+
