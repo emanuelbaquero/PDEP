@@ -3,6 +3,7 @@ module Kars where
 
 import Text.Show.Functions
 import Data.List
+import Data.Ord (comparing)
 
 cantincrVelocidadNitro :: Double
 cantincrVelocidadNitro = 15
@@ -138,4 +139,29 @@ pocaReserva carrera = carrera {participantes = filtrarLista (participantes carre
 
 podio carrera = carrera {participantes = init (participantes carrera)} -- init devuelve la lista sin el ultimo elemento 
 
---TODO: puntos 3.3 en adelante
+restarNafta carrera (Auto nombre nafta velocidad enamorado funcion) = (Auto nombre (nafta - (((longPista carrera) / 10) * velocidad)) velocidad enamorado funcion) --revisar
+
+
+enamoradoPresente auto carrera = elem (enamorado auto) (publico carrera)
+
+puedeUtilizarTrucoEnCarrera auto carrera = (enamoradoPresente auto carrera) && (puedeUsarTruco auto)
+
+utilizarTrucoEnCarrera carrera auto  | puedeUtilizarTrucoEnCarrera auto carrera = utilizarTruco auto
+                                     | otherwise = id auto
+
+
+quienGana:: [Auto] -> Auto
+quienGana = maximumBy (comparing velocidad)
+
+
+elGranTruco x [] = x
+elGranTruco x (y:ys) = elGranTruco (y x) ys
+
+listaFunciones carrera = [restarNafta carrera, utilizarTrucoEnCarrera carrera]
+
+darVuelta carrera [] = carrera
+darVuelta carrera (x:xs) = darVuelta (carrera {participantes = map (x carrera) (participantes carrera)}) xs --fixmepls
+
+--TODO: 3.3: 
+--hacer funcionar darVuelta: posiblemente haya que refactorizar las funciones para poder meterlas en una lista (todas tienen que retornar el mismo tipo de dato)
+--implementar correrCarrera
