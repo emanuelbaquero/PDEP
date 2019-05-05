@@ -8,7 +8,7 @@ import Data.Ord (comparing)
 cantincrVelocidadNitro :: Double
 cantincrVelocidadNitro = 15
 
-type Truco = Auto -> Auto  --Todos los trucos reciben un auto y devuelven un auto
+type Truco = Auto -> Auto --Todos los trucos reciben un auto y devuelven un auto
 data Auto = Auto {
     nombre :: [Char],
     nafta :: Double,
@@ -121,47 +121,67 @@ potrero = Carrera {
     participantes = [rayo, biankerr, gushtav, rodra]
 }
 
+sacarAlPistero :: Trampa
 sacarAlPistero carrera = carrera {participantes = ((tail . participantes) carrera)}
 
+restarVelocidad :: Auto -> Auto
 restarVelocidad auto = auto {velocidad = (velocidad auto) - 10}
 
+lluvia :: Carrera -> Carrera
 lluvia carrera = carrera {participantes = map restarVelocidad (participantes carrera)}
 
+cambiarTruco :: Auto -> Auto
 cambiarTruco auto = auto {truco = id} --le asigno la funcion identidad
 
+neutralizarTrucos :: Carrera -> Carrera
 neutralizarTrucos carrera = carrera {participantes = map cambiarTruco (participantes carrera)}
 
-filtro = (<30.0) . nafta --criterio de filtro
+filtroNafta :: Auto -> Bool 
+filtroNafta = (>30.0) . nafta --criterio de filtro
 
-filtrarLista = filter filtro --podria llegar a ser redundante
+filtrarPorNafta :: [Auto] -> [Auto]
+filtrarPorNafta = filter filtroNafta --podria llegar a ser redundante
 
-pocaReserva carrera = carrera {participantes = filtrarLista (participantes carrera)}
+pocaReserva :: Carrera -> Carrera
+pocaReserva carrera = carrera {participantes = filtrarPorNafta (participantes carrera)}
 
+podio :: Carrera -> Carrera
 podio carrera = carrera {participantes = init (participantes carrera)} -- init devuelve la lista sin el ultimo elemento 
 
+restarNafta :: Carrera -> Auto -> Auto
 restarNafta carrera (Auto nombre nafta velocidad enamorado funcion) = (Auto nombre (nafta - (((longPista carrera) / 10) * velocidad)) velocidad enamorado funcion) --revisar
 
-
+enamoradoPresente :: Auto -> Carrera -> Bool
 enamoradoPresente auto carrera = elem (enamorado auto) (publico carrera)
 
+puedeUtilizarTrucoEnCarrera :: Auto -> Carrera -> Bool
 puedeUtilizarTrucoEnCarrera auto carrera = (enamoradoPresente auto carrera) && (puedeUsarTruco auto)
 
+utilizarTrucoEnCarrera :: Carrera -> Auto -> Auto
 utilizarTrucoEnCarrera carrera auto  | puedeUtilizarTrucoEnCarrera auto carrera = utilizarTruco auto
                                      | otherwise = id auto
 
 
-quienGana:: [Auto] -> Auto
-quienGana = maximumBy (comparing velocidad)
+quienGana:: Carrera -> Auto
+quienGana carrera = maximumBy (comparing velocidad) (participantes carrera)
 
+elGranTruco :: Auto -> [(Auto -> Auto)] -> Auto
+elGranTruco auto [] = auto
+elGranTruco auto (cabeceraLista:colaLista) = elGranTruco (cabeceraLista auto) colaLista
 
-elGranTruco x [] = x
-elGranTruco x (y:ys) = elGranTruco (y x) ys
+listaFunciones :: [(Carrera -> Auto -> Auto)]
+listaFunciones = [restarNafta, utilizarTrucoEnCarrera]
 
-listaFunciones carrera = [restarNafta carrera, utilizarTrucoEnCarrera carrera]
+aplicarCambiosEnParticipantes :: [(Carrera -> Auto -> Auto)] -> Carrera -> Carrera
+aplicarCambiosEnParticipantes [] carrera  = carrera
+aplicarCambiosEnParticipantes (funcion:listaFunciones) carrera= aplicarCambiosEnParticipantes listaFunciones (carrera {participantes = map (funcion carrera) (participantes carrera)})
 
-darVuelta carrera [] = carrera
-darVuelta carrera (x:xs) = darVuelta (carrera {participantes = map (x carrera) (participantes carrera)}) xs --fixmepls
+darVueltaCarrera :: Carrera -> Carrera
+darVueltaCarrera = sacarAlPistero . (aplicarCambiosEnParticipantes listaFunciones)
 
---TODO: 3.3: 
---hacer funcionar darVuelta: posiblemente haya que refactorizar las funciones para poder meterlas en una lista (todas tienen que retornar el mismo tipo de dato)
---implementar correrCarrera
+darDosVueltas :: Carrera -> Carrera
+darDosVueltas = darVueltaCarrera . darVueltaCarrera
+
+correrCarrera :: Carrera -> Carrera
+correrCarrera carrera = iterate (darVueltaCarrera) carrera !! (cantVueltas carrera)
+
