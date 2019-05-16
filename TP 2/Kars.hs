@@ -185,3 +185,17 @@ darDosVueltas = darVueltaCarrera . darVueltaCarrera
 correrCarrera :: Carrera -> Carrera
 correrCarrera carrera = iterate (darVueltaCarrera) carrera !! (cantVueltas carrera)
 
+
+participantesInfinitos :: [a] -> [a]
+participantesInfinitos (x:xs) -> x:xs:carreraInfinita (x:xs)
+
+carreraInfinita :: Carrera -> Carrera
+carreraInfinita (Carrera cantVueltas longPista publico trampa participantes) = (Carrera cantVueltas longPista publico trampa participantesInfinitos(participantes))   
+
+darVueltaCarreraInfinita :: Carrera -> Carrera 
+darVueltaCarreraInfinita carrera = ((sacarAlPistero . (aplicarCambiosEnParticipantes listaFunciones)).(carreraInfinita)) carrera
+
+correrCarreraInfinita :: Carrera -> Carrera 
+correrCarreraInfinita carrera = iterate (darVueltaCarrera.carreraInfinita) carrera !! (cantVueltas carrera)
+
+
