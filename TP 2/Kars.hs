@@ -201,3 +201,16 @@ naftaPrimerParticipanteDosVueltas = (nafta . (head . participantes)) . darDosVue
 velocidadGranTruco auto listaFunciones = (velocidad . (elGranTruco auto)) listaFunciones
 
 naftaGranTruco auto listaFunciones = (nafta . (elGranTruco auto)) listaFunciones
+
+participantesInfinitos :: [a] -> [a]
+participantesInfinitos (x:xs) -> x:xs:carreraInfinita (x:xs)
+
+ carreraInfinita :: Carrera -> Carrera
+carreraInfinita (Carrera cantVueltas longPista publico trampa participantes) = (Carrera cantVueltas longPista publico trampa participantesInfinitos(participantes))   
+
+ darVueltaCarreraInfinita :: Carrera -> Carrera 
+darVueltaCarreraInfinita carrera = ((sacarAlPistero . (aplicarCambiosEnParticipantes listaFunciones)).(carreraInfinita)) carrera
+
+ correrCarreraInfinita :: Carrera -> Carrera 
+correrCarreraInfinita carrera = iterate (darVueltaCarrera.carreraInfinita) carrera !! (cantVueltas carrera)
+
