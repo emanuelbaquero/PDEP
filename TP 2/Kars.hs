@@ -49,8 +49,6 @@ rodra = Auto {
     truco = fingirAmor "Petra"
 }
 
-
-
 --Trucos
 deReversa :: Auto -> Auto
 deReversa (Auto nombre nafta velocidad enamorado funcion) = (Auto nombre (nafta + (velocidad * 0.2)) velocidad enamorado funcion)
@@ -185,3 +183,21 @@ darDosVueltas = darVueltaCarrera . darVueltaCarrera
 correrCarrera :: Carrera -> Carrera
 correrCarrera carrera = iterate (darVueltaCarrera) carrera !! (cantVueltas carrera)
 
+--funciones para CPs
+cantParticipantesPostTrampa =(length . participantes) . sacarAlPistero
+
+rayoPresente coche = (nombre coche == nombre rayo)
+
+rodraPresente coche = (nombre coche == nombre rodra)
+
+ultimoParticipante = (velocidad . (last . participantes)) . lluvia
+
+naftaPrimerParticipanteUnaVuelta = (nafta . (head . participantes)) . darVueltaCarrera
+
+velocidadPrimerParticipanteUnaVuelta = (velocidad . (head . participantes)) . darVueltaCarrera
+
+naftaPrimerParticipanteDosVueltas = (nafta . (head . participantes)) . darDosVueltas
+
+velocidadGranTruco auto listaFunciones = (velocidad . (elGranTruco auto)) listaFunciones
+
+naftaGranTruco auto listaFunciones = (nafta . (elGranTruco auto)) listaFunciones
